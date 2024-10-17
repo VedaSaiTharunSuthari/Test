@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login and Register with Celebration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-container {
+            background-color: white;
+            border: 1px solid #ccc;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 300px;
+            text-align: center;
+            position: relative;
+            z-index: 5;
+        }
+
+        .form-container input {
+            display: block;
+            margin: 10px auto;
+            padding: 10px;
+            width: calc(100% - 20px);
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form-container button {
+            background-color: blue;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            width: calc(100% - 20px);
+            margin-top: 10px;
+        }
+
+        .forgot-password, .register {
+            color: red;
+            text-decoration: underline;
+            cursor: pointer;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        .message-container {
+            display: none;
+            text-align: center;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 20px rgba(255, 0, 0, 0.5);
+            animation: popOut 0.6s ease-out forwards;
+            font-family: 'Snap ITC', cursive; /* Change this to the desired font */
+            color: black; /* Change text color to black */
+            font-size: 2rem;
+            z-index: 10;
+        }
+
+        @keyframes popOut {
+            0% {
+                transform: scale(0);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .emoji {
+            position: absolute;
+            font-size: 2rem;
+            animation: floatUp 4s ease-in-out forwards;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh);
+                opacity: 0;
+            }
+        }
+
+        /* Styling for the floating X logo */
+        .logo {
+            position: absolute;
+            width: 50px;
+            animation: floatUp 4s ease-in-out forwards;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Login Form -->
+<div id="formContainer" class="form-container">
+    <h2>Login</h2>
+    <input type="text" id="loginUserId" placeholder="User ID" />
+    <input type="password" id="loginPassword" placeholder="Password" />
+    <button onclick="login()">Login</button>
+    <div class="forgot-password" onclick="forgotPassword()">Forgot Password</div>
+    <div class="register" onclick="showRegisterForm()">Create New Account or Register</div>
+</div>
+
+<!-- Register Form -->
+<div id="registerContainer" class="form-container" style="display:none;">
+    <h2>Register</h2>
+    <input type="text" id="registerUsername" placeholder="Username" />
+    <input type="password" id="registerPassword" placeholder="Password" />
+    <button onclick="register()">Register</button>
+    <div class="register" onclick="showLoginForm()">Already have an account? Login</div>
+</div>
+
+<!-- Message Popup -->
+<div id="messageContainer" class="message-container">
+    <p>Hello! X mates</p>
+</div>
+
+<script>
+    let emojiInterval; // Store the interval ID for cleanup later
+
+    function createCelebration() {
+        const createLogo = () => {
+            const logoDiv = document.createElement('img');
+            logoDiv.classList.add('logo');
+            logoDiv.src = 'X-logo.png'; // Assuming you have the X logo file in the same directory
+            logoDiv.style.left = `${Math.random() * 100}vw`;
+            logoDiv.style.bottom = '0';
+            logoDiv.style.animationDuration = `${Math.random() * 2 + 3}s`;
+            document.body.appendChild(logoDiv);
+
+            setTimeout(() => {
+                logoDiv.remove();
+            }, 4000); // Adjust this timing if needed
+        };
+
+        setInterval(createLogo, 300);
+    }
+
+    function showMessage() {
+        const messageContainer = document.getElementById("messageContainer");
+        messageContainer.style.display = "block";
+        messageContainer.style.animation = "popOut 0.6s ease-out forwards";
+        createCelebration();
+    }
+
+    function register() {
+        const username = document.getElementById("registerUsername").value;
+        const password = document.getElementById("registerPassword").value;
+
+        if (username && password) {
+            if (localStorage.getItem(username)) {
+                alert("User ID already exists. Please choose another one.");
+                return;
+            }
+            localStorage.setItem(username, password);
+            alert("Registration Successful! Now you can log in.");
+            showLoginForm();
+        } else {
+            alert("Please fill out both username and password to register.");
+        }
+    }
+
+    function login() {
+        const userId = document.getElementById("loginUserId").value;
+        const password = document.getElementById("loginPassword").value;
+
+        if (userId && password) {
+            if (localStorage.getItem(userId) === password) {
+                document.getElementById("formContainer").style.display = "none";
+                document.getElementById("registerContainer").style.display = "none";
+                showMessage();
+            } else {
+                alert("Invalid User ID or Password.");
+            }
+        } else {
+            alert("Please fill in both fields.");
+        }
+    }
+
+    function forgotPassword() {
+        alert("Forgot Password functionality coming soon!");
+    }
+
+    function showRegisterForm() {
+        document.getElementById("formContainer").style.display = "none";
+        document.getElementById("registerContainer").style.display = "block";
+    }
+
+    function showLoginForm() {
+        document.getElementById("registerContainer").style.display = "none";
+        document.getElementById("formContainer").style.display = "block";
+    }
+</script>
+
+</body>
+</html>
